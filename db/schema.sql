@@ -5,11 +5,11 @@ USE management_db;
 
 CREATE TABLE department (
   id INT NOT NULL,
-  name VARCHAR(30),
+  department_name VARCHAR(30),
   PRIMARY KEY (id)
 );
 
-CREATE TABLE role (
+CREATE TABLE roleEmp (
   id INT NOT NULL,
   title VARCHAR(30),
   salary DECIMAL,
@@ -27,6 +27,6 @@ CREATE TABLE employee (
   role_id INT,
   manager_id INT,
   PRIMARY KEY (id),
-  FOREIGN KEY (role_id) REFERENCES role(id) ON DELETE CASCADE,
+  FOREIGN KEY (role_id) REFERENCES roleEmp(id) ON DELETE CASCADE,
   FOREIGN KEY (manager_id) REFERENCES employee(id) ON DELETE SET NULL
 );
