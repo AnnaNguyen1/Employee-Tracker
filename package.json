@@ -5,8 +5,10 @@
   "main": "server.js",
   "dependencies": {
     "console.table": "^0.10.0",
+    "dotenv": "^10.0.0",
     "inquirer": "^8.2.0",
-    "mysql2": "^2.3.3-rc.0"
+    "mysql2": "^2.3.3-rc.0",
+    "sequelize": "^6.9.0"
   },
   "devDependencies": {},
   "scripts": {
