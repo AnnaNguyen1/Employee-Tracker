@@ -1,6 +1,7 @@
 const inquirer = require("inquirer");
 const cTable = require("console.table");
 const ListPrompt = require("inquirer/lib/prompts/list");
+const { prompt } = require("inquirer");
 
 const db = require("./db");
 const PORT = process.env.PORT || 3001;
@@ -98,10 +99,71 @@ function viewAllDepartments() {
 
 function addEmployee() {
   try {
-    let managerChoice = []
     // grab data for Roles
+    const roleChoice = [];
+
+    db.viewAllRoles().then(([rls]) => {
+      let role = rls;
+
+      role.forEach((rls) => {
+        roleChoice.push({
+          name: rls.title,
+          value: rls.id,
+        });
+      });
+    });
+    console.log(roleChoice);
     // grab data for Managers
-    // Prompts
+
+    const managerChoice = [
+      {
+        name: "No Manager",
+        value: "NULL",
+      },
+    ];
+
+    db.getManagers().then(([mgr]) => {
+      let managers = mgr;
+
+      managers.forEach((manager) => {
+        managerChoice.push({
+          name: manager.first_name + " " + manager.last_name,
+          value: manager.id,
+        });
+      });
+      console.log(managerChoice);
+      const addEmp = [
+        {
+          type: "input",
+          name: "firstname",
+          message: "Employee First Name:",
+        },
+        {
+          type: "input",
+          name: "lastname",
+          message: "Employee Last Name:",
+        },
+        {
+          type: "list",
+          name: "role",
+          message: "Role of new Employee",
+          choices: roleChoice,
+        },
+        {
+          type: "list",
+          name: "manager",
+          message: "Select employee's manager",
+          choices: managerChoice,
+        },
+      ];
+      prompt(addEmployee).then((emp) => {
+        console.log(emp);
+      });
+    });
+
+    const addEmp = [{}];
+  } catch (e) {
+    console.error(e);
   }
 }
 
@@ -112,6 +174,8 @@ function updateEmployeeRole() {
     // prompt qs
     // grab role title
     // update role for employee
+  } catch (e) {
+    console.error(e);
   }
 }
 
@@ -120,15 +184,18 @@ function addRole() {
     // Grab a list of departments
     // Q's on the role - title, salary, department
     // add role into db
+  } catch (e) {
+    console.error(e);
   }
 }
 
-function add department() {
+function adddepartment() {
   try {
     // 1 q
     // add department into db
+  } catch (e) {
+    console.error(e);
   }
 }
-
 
 userMenu();
