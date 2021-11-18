@@ -207,8 +207,9 @@ async function updateEmployeeRole() {
 
     await db.updateEmployeeRole(selectEmployee, selectRole);
     console.log("\n");
-    await viewAllRoles;
     console.log(`Employee's role has been updated!`);
+
+    await viewAllEmployees();
     console.log("\n");
   } catch (e) {
     console.error(e);

@@ -46,7 +46,7 @@ class Queries {
 
   addDepartment(newDep) {
     let sql = `INSERT INTO department (department_name) 
-                    VALUES ("${newDep.dep});`;
+                    VALUES ("${newDep.dep}");`;
     return this.connection.promise().query(sql);
   }
 }

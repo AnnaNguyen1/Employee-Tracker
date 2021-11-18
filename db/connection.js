@@ -8,7 +8,7 @@ const connection = mysql.createConnection(
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
   },
-  console.log("Hello there")
+  console.log("Welcome to the Employee Management System!")
 );
 
 connection.connect((err) => {
