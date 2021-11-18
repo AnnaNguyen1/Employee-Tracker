@@ -44,7 +44,11 @@ class Queries {
     return this.connection.promise().query(sql);
   }
 
-  addDepartment() {}
+  addDepartment(newDep) {
+    let sql = `INSERT INTO department (department_name) 
+                    VALUES ("${newDep.dep});`;
+    return this.connection.promise().query(sql);
+  }
 }
 
 module.exports = new Queries(connection);

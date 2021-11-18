@@ -207,9 +207,9 @@ async function updateEmployeeRole() {
 
     await db.updateEmployeeRole(selectEmployee, selectRole);
     console.log("\n");
+    await viewAllRoles;
     console.log(`Employee's role has been updated!`);
     console.log("\n");
-    await userMenu();
   } catch (e) {
     console.error(e);
   }
@@ -251,16 +251,28 @@ async function addRole() {
       .then(() => {
         console.log(`${newRole.title} added!`);
       })
-      .then(() => viewAllEmployees());
+      .then(() => viewAllRoles());
   } catch (e) {
     console.error(e);
   }
 }
 
-function adddepartment() {
+async function addDepartment() {
   try {
-    // 1 q
-    // add department into db
+    const addDep = [
+      {
+        type: "input",
+        name: "dep",
+        message: "What is the name of the new Department?",
+      },
+    ];
+
+    const newDep = await inquirer.prompt(addDep);
+    db.addDepartment(newDep)
+      .then(() => {
+        console.log(`${newDep.dep} added!`);
+      })
+      .then(() => viewAllDepartments());
   } catch (e) {
     console.error(e);
   }
