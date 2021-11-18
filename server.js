@@ -66,7 +66,6 @@ const userMenu = () => {
 function viewAllEmployees() {
   db.viewAllEmployees()
     .then(([rows]) => {
-      //filter by row
       let emp = rows;
 
       console.log("\n");
@@ -216,11 +215,43 @@ async function updateEmployeeRole() {
   }
 }
 
-function addRole() {
+async function addRole() {
   try {
-    // Grab a list of departments
-    // Q's on the role - title, salary, department
-    // add role into db
+    const depChoice = [];
+    const [depList] = await db.viewAllDepartments();
+    const singleDep = depList;
+    singleDep.forEach((dep) => {
+      depChoice.push({
+        name: dep.department_name,
+        value: dep.id,
+      });
+    });
+
+    const addRole = [
+      {
+        type: "input",
+        name: "title",
+        message: "What title is the new role?",
+      },
+      {
+        type: "input",
+        name: "salary",
+        message: "Please enter the salary for the new role:",
+      },
+      {
+        type: "list",
+        name: "department",
+        message: "What department does this role fall under?",
+        choices: depChoice,
+      },
+    ];
+
+    const newRole = await inquirer.prompt(addRole);
+    db.addRole(newRole)
+      .then(() => {
+        console.log(`${newRole.title} added!`);
+      })
+      .then(() => viewAllEmployees());
   } catch (e) {
     console.error(e);
   }

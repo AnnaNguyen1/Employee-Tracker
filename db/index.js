@@ -38,7 +38,11 @@ class Queries {
     return this.connection.promise().query(sql);
   }
 
-  addRole() {}
+  addRole(newRole) {
+    let sql = `INSERT INTO roleEmp (title, salary, department_id) 
+                    VALUES ("${newRole.title}", "${newRole.salary}", ${newRole.department});`;
+    return this.connection.promise().query(sql);
+  }
 
   addDepartment() {}
 }
