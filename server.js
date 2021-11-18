@@ -97,23 +97,18 @@ function viewAllDepartments() {
     .then(() => userMenu());
 }
 
-function addEmployee() {
+async function addEmployee() {
   try {
-    // grab data for Roles
     const roleChoice = [];
-
-    db.viewAllRoles().then(([rls]) => {
-      let role = rls;
-
-      role.forEach((rls) => {
-        roleChoice.push({
-          name: rls.title,
-          value: rls.id,
-        });
+    const [roleList] = await db.viewAllRoles();
+    const singleRole = roleList;
+    singleRole.forEach((rls) => {
+      roleChoice.push({
+        name: rls.title,
+        value: rls.id,
       });
     });
-    console.log(roleChoice);
-    // grab data for Managers
+    // console.log(roleChoice);
 
     const managerChoice = [
       {
@@ -121,59 +116,101 @@ function addEmployee() {
         value: "NULL",
       },
     ];
-
-    db.getManagers().then(([mgr]) => {
-      let managers = mgr;
-
-      managers.forEach((manager) => {
-        managerChoice.push({
-          name: manager.first_name + " " + manager.last_name,
-          value: manager.id,
-        });
-      });
-      console.log(managerChoice);
-      const addEmp = [
-        {
-          type: "input",
-          name: "firstname",
-          message: "Employee First Name:",
-        },
-        {
-          type: "input",
-          name: "lastname",
-          message: "Employee Last Name:",
-        },
-        {
-          type: "list",
-          name: "role",
-          message: "Role of new Employee",
-          choices: roleChoice,
-        },
-        {
-          type: "list",
-          name: "manager",
-          message: "Select employee's manager",
-          choices: managerChoice,
-        },
-      ];
-      prompt(addEmployee).then((emp) => {
-        console.log(emp);
+    const [managerList] = await db.getManagers();
+    const singleManager = managerList;
+    singleManager.forEach((mng) => {
+      managerChoice.push({
+        name: mng.first_name + " " + mng.last_name,
+        value: mng.id,
       });
     });
+    // console.log(managerChoice);
 
-    const addEmp = [{}];
+    const addEmp = [
+      {
+        type: "input",
+        name: "firstname",
+        message: "Employee First Name:",
+      },
+      {
+        type: "input",
+        name: "lastname",
+        message: "Employee Last Name:",
+      },
+      {
+        type: "list",
+        name: "role",
+        message: "Role of new Employee",
+        choices: roleChoice,
+      },
+      {
+        type: "list",
+        name: "manager",
+        message: "Select employee's manager",
+        choices: managerChoice,
+      },
+    ];
+
+    const selectedValue = await inquirer.prompt(addEmp);
+    // console.log(selectedValue);
+    db.createEmployee(selectedValue)
+      .then(() => {
+        console.log(
+          `${selectedValue.firstname} ${selectedValue.lastname} added!`
+        );
+      })
+      .then(() => viewAllEmployees());
   } catch (e) {
     console.error(e);
   }
 }
 
-function updateEmployeeRole() {
+async function updateEmployeeRole() {
   try {
     // grab names of employees from the employee database
-    // const names as choices
-    // prompt qs
-    // grab role title
-    // update role for employee
+    const employeeChoice = [];
+    const [employeeList] = await db.viewAllEmployees();
+    const singleEmp = employeeList;
+    singleEmp.forEach((emp) => {
+      employeeChoice.push({
+        name: emp.first_name + " " + emp.last_name,
+        value: emp.id,
+      });
+    });
+
+    const roleChoice = [];
+    const [roles] = await db.viewAllRoles();
+    const singleRole = roles;
+    singleRole.forEach((rle) => {
+      roleChoice.push({
+        name: rle.title,
+        value: rle.id,
+      });
+    });
+
+    const selectEmployee = await prompt([
+      {
+        type: "list",
+        name: "employeeSelect",
+        message: "Which Employee's role would you like to update?",
+        choices: employeeChoice,
+      },
+    ]);
+
+    const selectRole = await prompt([
+      {
+        type: "list",
+        name: "roleSelect",
+        message: "Select new Role:",
+        choices: roleChoice,
+      },
+    ]);
+
+    await db.updateEmployeeRole(selectEmployee, selectRole);
+    console.log("\n");
+    console.log(`Employee's role has been updated!`);
+    console.log("\n");
+    await userMenu();
   } catch (e) {
     console.error(e);
   }
